@@ -168,6 +168,27 @@ td .sub{display:block;font-size:.85rem;color:var(--muted)}
 .op-form .out{grid-column:1/-1;font-size:.92rem;font-weight:600}
 @media (max-width:520px){.op-form{grid-template-columns:1fr}}
 
+/* suggest an improvement */
+.suggest-form{border:1px solid var(--line);border-radius:4px;padding:18px;display:grid;gap:14px;background:var(--surface)}
+.suggest-form label{font-weight:700;display:block;margin-bottom:4px}
+.suggest-form .req{color:var(--bad);font-weight:700}
+.suggest-form input,.suggest-form select,.suggest-form textarea{width:100%;font:inherit;padding:9px 10px;border:1px solid var(--line-strong);border-radius:4px;background:var(--surface);color:var(--ink)}
+.suggest-form textarea{min-height:120px;resize:vertical;line-height:1.45}
+.suggest-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px}
+@media (max-width:640px){.suggest-row{grid-template-columns:1fr}}
+.suggest-actions{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+.suggest-actions .count{font-size:.85rem;color:var(--muted);margin-left:auto}
+.suggest-out{font-size:.95rem;font-weight:600}
+.suggest-out.bad{color:var(--bad)}
+.suggest-out.ok{color:var(--ok)}
+.suggest-list{display:flex;flex-direction:column;gap:10px}
+.suggest-card{border:1px solid var(--line);border-left:6px solid var(--primary);border-radius:0 4px 4px 0;padding:14px 16px;background:var(--surface);display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:start}
+.suggest-card.sample{border-left-color:var(--line-strong);background:var(--band)}
+.suggest-card h3{font-family:var(--f-body);font-size:1rem}
+.suggest-card p{margin-top:4px}
+.suggest-card .meta{font-size:.82rem;color:var(--muted);margin-top:6px}
+.suggest-empty{font-size:.95rem;color:var(--muted)}
+
 /* map */
 .map-grid{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:18px}
 @media (max-width:820px){.map-grid{grid-template-columns:1fr}}
@@ -220,7 +241,7 @@ td .sub{display:block;font-size:.85rem;color:var(--muted)}
 .alerts{display:flex;flex-direction:column;gap:10px}
 
 /* contacts */
-.copy{font:600 .8rem var(--f-body);border:1px solid var(--line-strong);background:var(--surface);color:var(--primary);border-radius:3px;padding:3px 9px;cursor:pointer}
+.copy,.sug-remove{font:600 .8rem var(--f-body);border:1px solid var(--line-strong);background:var(--surface);color:var(--primary);border-radius:3px;padding:3px 9px;cursor:pointer}
 tr.emerg td{background:var(--bad-bg)!important}
 
 /* sources line + confirm tag */
@@ -332,7 +353,7 @@ html{scroll-behavior:smooth}
 
 <nav class="primary-nav" aria-label="Primary">
   <div class="container">
-    <a href="#today" class="cur">Today</a><a href="#fuel">Fuel &amp; Harbor</a><a href="#getting-here">Getting Here</a><a href="#services">Services</a><a href="#utilities">Utilities</a><a href="#emergency">Emergency</a><a href="#government">Local Government</a><a href="#history">History</a>
+    <a href="#today" class="cur">Today</a><a href="#fuel">Fuel &amp; Harbor</a><a href="#getting-here">Getting Here</a><a href="#services">Services</a><a href="#utilities">Utilities</a><a href="#emergency">Emergency</a><a href="#government">Local Government</a><a href="#history">History</a><a href="#suggest">Suggest</a>
   </div>
 </nav>
 
@@ -363,6 +384,7 @@ html{scroll-behavior:smooth}
         <li><a href="#tides">Time the tide for the passes<span class="arrow">→</span></a></li>
         <li><a href="#government">Follow the borough question<span class="arrow">→</span></a></li>
         <li><a href="#emergency">Get help in an emergency<span class="arrow">→</span></a></li>
+        <li><a href="#suggest">Suggest an improvement<span class="arrow">→</span></a></li>
       </ul>
     </div>
   </div>
@@ -391,6 +413,7 @@ html{scroll-behavior:smooth}
       <li><a href="#history">History &amp; nearby</a></li>
       <li><a href="#notices">Community notices</a></li>
       <li><a href="#contacts">Contacts</a></li>
+      <li><a href="#suggest">Suggest an improvement</a></li>
     </ul>
   </aside>
 
@@ -703,6 +726,56 @@ html{scroll-behavior:smooth}
         <tbody id="contactbody"></tbody>
       </table></div>
     </section>
+
+    <section id="suggest">
+      <div>
+        <div class="crumbs"><a href="#top">Home</a> › Suggest an improvement</div>
+        <div class="sec-title"><h2>Suggest an improvement</h2><span class="eff">Stays on this device</span></div>
+      </div>
+      <p class="intro">See a wrong hour, a missing service, or something hard to use? Write it down here. This prototype keeps suggestions in your browser only. A live site would send them to the people who maintain the board.</p>
+      <form class="suggest-form" id="suggestform" autocomplete="off">
+        <div>
+          <label for="sug-cat">What is this about?</label>
+          <select id="sug-cat" name="category" required>
+            <option value="Correct a listing">Correct a listing</option>
+            <option value="Add something missing">Add something missing</option>
+            <option value="Hours or status">Hours or status</option>
+            <option value="Getting here">Getting here</option>
+            <option value="Emergency info">Emergency info</option>
+            <option value="How the site works">How the site works</option>
+            <option value="Something else">Something else</option>
+          </select>
+        </div>
+        <div>
+          <label for="sug-text">Your suggestion <span class="req">*</span></label>
+          <textarea id="sug-text" name="suggestion" required minlength="10" maxlength="800" placeholder="Example: The fuel dock closes earlier on Sundays than the hours listed here."></textarea>
+          <p class="muted" id="sug-count" style="font-size:.85rem;margin-top:4px">0 / 800</p>
+        </div>
+        <div class="suggest-row">
+          <div>
+            <label for="sug-name">Your name <span class="muted" style="font-weight:600">(optional)</span></label>
+            <input id="sug-name" name="name" maxlength="80" autocomplete="name">
+          </div>
+          <div>
+            <label for="sug-contact">How to reach you <span class="muted" style="font-weight:600">(optional)</span></label>
+            <input id="sug-contact" name="contact" maxlength="120" placeholder="Phone, radio, or email" autocomplete="email">
+          </div>
+        </div>
+        <div class="suggest-actions">
+          <button class="btn" type="submit">Save suggestion</button>
+          <p class="suggest-out" id="sug-out" aria-live="polite"></p>
+        </div>
+      </form>
+      <div>
+        <h3>Suggestions from this browser</h3>
+        <div class="suggest-list" id="sug-list" style="margin-top:10px"></div>
+      </div>
+      <div>
+        <h3>Examples</h3>
+        <p class="suggest-empty" style="margin-top:4px">These notes show the kind of correction the board is waiting on. They are not saved suggestions.</p>
+        <div class="suggest-list" id="sug-samples" style="margin-top:10px"></div>
+      </div>
+    </section>
   </main>
 </div>
 
@@ -711,7 +784,7 @@ html{scroll-behavior:smooth}
   <div class="footer-main"><div class="container">
     <div><h4>Services</h4><ul><li><a href="#fuel">Fuel dock</a></li><li><a href="#harbor">Harbor &amp; moorage</a></li><li><a href="#services">Businesses &amp; lodges</a></li><li><a href="#utilities">Power &amp; water</a></li></ul></div>
     <div><h4>Visitors</h4><ul><li><a href="#getting-here">Getting here</a></li><li><a href="#visiting">Arrival checklists</a></li><li><a href="#map">Boardwalk map</a></li><li><a href="#history">History &amp; nearby</a></li></ul></div>
-    <div><h4>Community</h4><ul><li><a href="#government">Local government</a></li><li><a href="#emergency">Emergency &amp; health</a></li><li><a href="#notices">Notices</a></li><li><a href="#contacts">Contacts</a></li></ul></div>
+    <div><h4>Community</h4><ul><li><a href="#government">Local government</a></li><li><a href="#emergency">Emergency &amp; health</a></li><li><a href="#notices">Notices</a></li><li><a href="#contacts">Contacts</a></li><li><a href="#suggest">Suggest an improvement</a></li></ul></div>
     <div><h4>Location</h4><ul><li>Chichagof Island</li><li>Cross Sound, Alaska</li><li class="mono" style="font-size:.85rem">58.19° N · 136.34° W</li></ul></div>
   </div></div>
   <div class="identifier"><div class="container">
@@ -809,7 +882,7 @@ document.getElementById("opform").addEventListener("submit",e=>{
 });
 
 /* search: jump to section by keyword */
-const KW={fuel:"fuel",diesel:"fuel",gas:"fuel",moorage:"harbor",harbor:"harbor",slip:"harbor",grid:"harbor",shore:"harbor",mail:"services",post:"services",flight:"getting-here",plane:"getting-here",seaplane:"getting-here",juneau:"getting-here",tide:"tides",weather:"tides",map:"map",store:"services",restaurant:"services",shower:"services",laundry:"services",weld:"services",lodge:"services",charter:"services",power:"utilities",electric:"utilities",hydro:"utilities",water:"utilities",emergency:"emergency",clinic:"emergency",medical:"emergency",ems:"emergency",borough:"government",xunaa:"government",hoonah:"government",government:"government",nonprofit:"government",history:"history",population:"history",census:"history",museum:"history",george:"history",inian:"history",phone:"contacts",contact:"contacts",notice:"notices"};
+const KW={fuel:"fuel",diesel:"fuel",gas:"fuel",moorage:"harbor",harbor:"harbor",slip:"harbor",grid:"harbor",shore:"harbor",mail:"services",post:"services",flight:"getting-here",plane:"getting-here",seaplane:"getting-here",juneau:"getting-here",tide:"tides",weather:"tides",map:"map",store:"services",restaurant:"services",shower:"services",laundry:"services",weld:"services",lodge:"services",charter:"services",power:"utilities",electric:"utilities",hydro:"utilities",water:"utilities",emergency:"emergency",clinic:"emergency",medical:"emergency",ems:"emergency",borough:"government",xunaa:"government",hoonah:"government",government:"government",nonprofit:"government",history:"history",population:"history",census:"history",museum:"history",george:"history",inian:"history",phone:"contacts",contact:"contacts",notice:"notices",suggest:"suggest",suggestion:"suggest",improve:"suggest",improvement:"suggest",feedback:"suggest"};
 document.getElementById("searchform").addEventListener("submit",e=>{e.preventDefault();const q=document.getElementById("q").value.toLowerCase();
   const k=Object.keys(KW).find(k=>q.includes(k));if(k)document.getElementById(KW[k]).scrollIntoView();});
 
@@ -889,6 +962,58 @@ const contacts=[
   {who:"Weather radio",how:"NOAA Weather Radio",val:"WX4"}
 ];
 document.getElementById("contactbody").innerHTML=contacts.map((c,i)=>`<tr class="${c.emerg?"emerg":""}"><td><strong>${c.who}</strong><span class="sub">${c.how}</span></td><td class="mono" id="cv${i}">${c.val}</td><td style="text-align:right"><button class="copy" type="button" data-i="${i}">Copy</button></td></tr>`).join("");
+/* suggestions: saved in this browser only */
+const SUGGEST_KEY="elfin-suggestions-v1";
+const samples=[
+  {cat:"Fuel & harbor",text:"Publish the fuel dock's real phone number. The ADF&G listing looks like it may have the wrong area code.",name:"Example"},
+  {cat:"Getting here",text:"Replace the sample flight days with the current Alaska Seaplanes schedule.",name:"Example"},
+  {cat:"Hours or status",text:"Confirm winter store hours before October, and mark anything still unconfirmed.",name:"Example"}
+];
+function loadSuggestions(){
+  try{const raw=JSON.parse(localStorage.getItem(SUGGEST_KEY)||"[]");return Array.isArray(raw)?raw:[];}
+  catch(e){return [];}
+}
+function saveSuggestions(list){
+  localStorage.setItem(SUGGEST_KEY,JSON.stringify(list));
+}
+function suggestionCard(s,opts){
+  const who=s.name?esc(s.name):"Anonymous";
+  const reach=s.contact?` · ${esc(s.contact)}`:"";
+  const when=s.at?` · ${fmtStamp(s.at)}`:"";
+  const remove=opts&&opts.remove?`<button class="sug-remove" type="button" data-id="${esc(s.id)}">Remove</button>`:"";
+  return `<article class="suggest-card${opts&&opts.sample?" sample":""}"><div><h3>${esc(s.cat)}</h3><p>${esc(s.text)}</p><p class="meta">${who}${reach}${when}</p></div>${remove}</article>`;
+}
+function esc(v){return String(v==null?"":v).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+function renderSuggestions(){
+  const list=loadSuggestions();
+  const box=document.getElementById("sug-list");
+  box.innerHTML=list.length?list.map(s=>suggestionCard(s,{remove:true})).join(""):`<p class="suggest-empty">No suggestions saved in this browser yet.</p>`;
+  document.getElementById("sug-samples").innerHTML=samples.map(s=>suggestionCard(s,{sample:true})).join("");
+  box.querySelectorAll(".sug-remove").forEach(b=>b.onclick=()=>{
+    saveSuggestions(loadSuggestions().filter(s=>s.id!==b.dataset.id));
+    renderSuggestions();
+  });
+}
+const sugText=document.getElementById("sug-text"),sugCount=document.getElementById("sug-count"),sugOut=document.getElementById("sug-out");
+sugText.addEventListener("input",()=>{sugCount.textContent=sugText.value.length+" / 800";});
+document.getElementById("suggestform").addEventListener("submit",e=>{
+  e.preventDefault();
+  const text=sugText.value.trim(),cat=document.getElementById("sug-cat").value,name=document.getElementById("sug-name").value.trim(),contact=document.getElementById("sug-contact").value.trim();
+  sugOut.className="suggest-out";
+  if(text.length<10){sugOut.classList.add("bad");sugOut.textContent="Write at least a short sentence so someone can act on it.";sugText.focus();return;}
+  const list=loadSuggestions();
+  if(list.some(s=>s.text.toLowerCase()===text.toLowerCase())){sugOut.classList.add("bad");sugOut.textContent="That suggestion is already saved in this browser.";return;}
+  let saved=true;
+  try{saveSuggestions([{id:String(Date.now()),cat,text,name,contact,at:Date.now()},...list]);}
+  catch(err){saved=false;}
+  if(!saved){sugOut.classList.add("bad");sugOut.textContent="This browser blocked saving. The suggestion was not stored.";return;}
+  e.target.reset();sugCount.textContent="0 / 800";
+  renderSuggestions();
+  sugOut.classList.add("ok");
+  sugOut.textContent="Saved on this device. It has not been sent to anyone yet.";
+});
+renderSuggestions();
+
 document.querySelectorAll(".copy").forEach(b=>b.onclick=()=>{
   const el=document.getElementById("cv"+b.dataset.i),done=()=>{b.textContent="Copied";setTimeout(()=>b.textContent="Copy",1500);};
   const pick=()=>{const r=document.createRange();r.selectNodeContents(el);const s=getSelection();s.removeAllRanges();s.addRange(r);};
